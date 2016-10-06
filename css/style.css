@@ -1,0 +1,37 @@
+html, body {
+  height:100%;
+}
+body {
+  background: #181818;
+  color: #EEE;
+}
+canvas {
+  margin-bottom: 2em;
+}
+header {
+  text-align: center;
+}
+li:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.btn-inv {
+  background: #181818;
+  border: solid 1px;
+}
+.btn-inv:hover {
+  background: #EEE;
+  color: #181818;
+}
+.game-sec {
+  text-align: center;
+  margin: 2em 0 2em 0;
+}
+
+#player1 {
+  color: #F00;
+}
+#player2 {
+  color: #00F;
+}

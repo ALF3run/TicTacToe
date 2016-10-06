@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TicTacToe</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src='bootstrap-3.3.7-dist/js/bootstrap.min.js'></script>
+<link rel='stylesheet prefetch' href='bootstrap-3.3.7-dist/css/bootstrap.min.css'>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+   <div class="container-fluid">
+      <header>
+         <h1>TicTacToe</h1>
+      </header>
+      <main class"row">
+         <section class="col-sm-3">
+            <header>
+               <h3>Points</h3>
+            </header>
+            <div class="row text-center">
+               <div class="col-xs-6">
+                  <p id="player1">Player 1</p>
+                  <p id="points1">0</p>
+               </div>
+               <div class="col-xs-6">
+                  <p id="player2">Player 2</p>
+                  <p id="points2">0</p>
+               </div>
+            </div>
+         </section>
+         
+         <section class="col-sm-6 game-sec">
+            <header class="sr-only">
+               <h3>Game</h3>
+            </header>
+            <div class="row">
+               <div class="col-12-xs">
+                  <canvas id="game" width="250px" height="250px"></canvas>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-12-xs">
+                  <button id="clear" class="btn btn-inv">Reset</button>
+               </div>
+            </div>
+         </section>
+         
+         <!--<section class="col-sm-3">
+            <header>
+               <h3>Difficulty</h3>
+            </header>
+            <ul class="list-unstyled text-center">
+               <li>EASY</li>
+               <li>HARD</li>
+               <li>UNBEATABLE</li>
+            </ul>
+         </section>-->
+      </main>
+   </div>
+
+   <script src="js/index.js"></script>
+   
+</body>
+</html>
