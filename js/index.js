@@ -23,7 +23,6 @@ function gameEngine() {
   var player = 1;
   var points = [0, 0];
   var ready = 1;
-  var pc = 0;
 
   gameBoard();
 
@@ -34,8 +33,7 @@ function gameEngine() {
         cells[c].val = cross(cells[c].cx, cells[c].cy);
         chkTris(cells);
       } else {
-        if(!pc) cells[c].val = circle(cells[c].cx, cells[c].cy);
-        else ia();
+        cells[c].val = circle(cells[c].cx, cells[c].cy);
         chkTris(cells);
       }
     }
