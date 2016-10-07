@@ -19,16 +19,22 @@ function gameEngine() {
     {cx: w/2 - h/6, cy: h*2/3},
     {cx: w/2 + h/6, cy: h*2/3}
   ];
+  var moves = 0;
   var player = 1;
   var points = [0, 0];
   var ready = 1;
+  var pc = 0;
 
   gameBoard();
 
   game.addEventListener('click', function(event) {
     var c = getCell(cells, event.offsetX, event.offsetY);
-    if(cells[c].val === 0 && ready === 1) {
-      cells[c].val = turnSwitch(cells[c].cx, cells[c].cy);
+    if(cells[c].val === 0 && ready === 1 && moves%2 === 0) {
+      cells[c].val = cross(cells[c].cx, cells[c].cy);
+      chkTris(cells);
+    } else {
+      if(!pc) cells[c].val = circle(cells[c].cx, cells[c].cy);
+      else ia();
       chkTris(cells);
     }
 
@@ -44,8 +50,10 @@ function gameEngine() {
 
   function gameBoard() {
     var px = 0;
+    moves = 0;
 
     ctx.strokeStyle = '#FFF';
+    ctx.lineWidth = 1;
 
     for(var c in cells) {
       cells[c].val = 0;
@@ -77,27 +85,15 @@ function gameEngine() {
   function getCell(cells, x, y) {
     for(var c in cells) {
       if(cells[c].cx <= x && cells[c].cx + h/3 >= x && cells[c].cy <= y && cells[c].cy + h/3 >= y) {
-        //console.log(c, cells[c]);
         return c;
       } 
     }
   }
-  function turnSwitch(x, y) {
-    if(player === 1) {
-      player = 2;
-      cross(x, y);
-      return 1;
-    }
-    else {
-      player = 1;
-      circle(x, y);
-      return 2;
-    }
-  }
   function cross(x, y) {
     var pxh = 0, pxw = 0;
-
+    
     ctx.strokeStyle = "#F00";
+    ctx.lineWidth = 3;
 
     ready = 0;
     var slowDrawL = setInterval(function() {
@@ -109,19 +105,21 @@ function gameEngine() {
         ready = 1;
         return clearInterval(slowDrawL);
       }
-    }, 1);
+    });
 
     ctx.beginPath();
     ctx.moveTo(x+h/3-10, y+10);
     ctx.lineTo(x+10, y+h/3-10);
     ctx.stroke();
 
-    return 0;
+    return 1;
   }
   function circle(x, y) {
     var r = Math.sqrt(h*h/36) - 10;
     var perc = 0;
+    
     ctx.strokeStyle = "#00F";
+    ctx.lineWidth = 3;
 
     ready = 0;
     var slowDraw = setInterval(function() {
@@ -132,11 +130,12 @@ function gameEngine() {
         ready = 1;
         return clearInterval(slowDraw);
       }
-    }, 1);
+    });
 
-    return 0;
+    return 2;
   }
   function clear() {
+    player = 1;
     var wait = setInterval(function() {
       if(ready) {
         ctx.clearRect(0,0,w,h);
@@ -144,15 +143,6 @@ function gameEngine() {
         clearInterval(wait);
       }
     });
-
-    return 0;
-  }
-  function chkFull(cells) {
-    var e = 0;
-    for(var i = 0; i < cells.length; i++) {
-      if(cells[i].val) e++;
-    }
-    if(e === i) clear();
 
     return 0;
   }
@@ -203,6 +193,7 @@ function gameEngine() {
       }
     }
 
-    return chkFull(cells);
+    if(moves === cells.length-1) return clear();
+    else moves++;
   }
 }
