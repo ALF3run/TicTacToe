@@ -29,13 +29,15 @@ function gameEngine() {
 
   game.addEventListener('click', function(event) {
     var c = getCell(cells, event.offsetX, event.offsetY);
-    if(cells[c].val === 0 && ready === 1 && moves%2 === 0) {
-      cells[c].val = cross(cells[c].cx, cells[c].cy);
-      chkTris(cells);
-    } else {
-      if(!pc) cells[c].val = circle(cells[c].cx, cells[c].cy);
-      else ia();
-      chkTris(cells);
+    if(cells[c].val === 0 && ready === 1) {
+      if(moves%2 === 0) {
+        cells[c].val = cross(cells[c].cx, cells[c].cy);
+        chkTris(cells);
+      } else {
+        if(!pc) cells[c].val = circle(cells[c].cx, cells[c].cy);
+        else ia();
+        chkTris(cells);
+      }
     }
 
     return 0;
