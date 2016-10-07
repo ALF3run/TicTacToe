@@ -5,7 +5,7 @@
         id        = "com.alf3run.tictactoe2players"
         version   = "1.0.0">
 
-    <name>Hello World</name>
+    <name>TicTacToe</name>
 
     <description>
         TicTacToe game based on FreeCodeCamp project.
