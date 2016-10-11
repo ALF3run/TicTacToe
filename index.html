@@ -12,42 +12,67 @@
 
 <body>
    <div class="container-fluid">
-      <header>
+     <section class="menu-overlay">
+       <div id="menu-close" class="menu-toggle">
+         <i class="fa fa-times"></i>
+       </div>
+       <header>
+         <h2>Menu</h2>
+       </header>
+       <div class="row">
+         <div class="col-xs-12">
+           <p>Choose your opponent</p>
+           <div class="row">
+             <div class="col-xs-6">
+               <div id="human-player" class="btn btn-inv">
+                 <i class="fa fa-user"></i>
+                 <p>Human</p>
+               </div>
+             </div>
+             <div class="col-xs-6">
+               <div id="pc-player" class="btn btn-inv">
+                 <i class="fa fa-desktop"></i>
+                 <p>PC</p>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+     </section>
+     <main class "row">
+       <div id="menu-open" class="menu-toggle">
+         <i class="fa fa-bars"></i>
+       </div>
+       <header>
          <h1>TicTacToe</h1>
-      </header>
-      <main class"row">
-         <section class="col-sm-3">
-            <header>
-               <h3>Points</h3>
-            </header>
-            <div class="row text-center">
-               <div class="col-xs-6">
-                  <p id="player1">Player 1</p>
-                  <p id="points1">0</p>
-               </div>
-               <div class="col-xs-6">
-                  <p id="player2">Player 2</p>
-                  <p id="points2">0</p>
-               </div>
-            </div>
-         </section>
-         
-         <section class="col-sm-6 game-sec">
-            <header class="sr-only">
-               <h3>Game</h3>
-            </header>
-            <div class="row">
-               <div class="col-12-xs">
-                  <canvas id="game" width="250px" height="250px"></canvas>
-               </div>
-            </div>
-            <div class="row">
-               <div class="col-12-xs">
-                  <button id="reset" class="btn btn-inv">Reset</button>
-               </div>
-            </div>
-         </section>
-      </main>
+       </header>
+       <section>
+         <header>
+           <h3>Points</h3>
+         </header>
+         <div class="row text-center">
+           <div class="col-xs-6">
+             <p id="player1">Player 1</p>
+             <p id="points1">0</p>
+           </div>
+           <div class="col-xs-6">
+             <p id="player2">Player 2</p>
+             <p id="points2">0</p>
+           </div>
+         </div>
+       </section>
+       <section class="game-sec">
+         <header class="sr-only">
+           <h3>Game</h3>
+         </header>
+         <div id="game-container" class="col-12-xs">
+           <canvas id="game" width="250px" height="250px"></canvas>
+         </div>
+         <div>
+           <button id="reset" class="btn btn-inv">Reset</button>
+         </div>
+       </section>
+     </main>
    </div>
 
    <script src="js/index.js"></script>
