@@ -2,7 +2,7 @@ html, body {
   height:100%;
 }
 body {
-  background: #181818;
+  background: #000;
   color: #EEE;
 }
 canvas {
@@ -17,16 +17,41 @@ li:hover {
 }
 
 .btn-inv {
-  background: #181818;
+  background: #000;
   border: solid 1px;
 }
 .btn-inv:hover {
   background: #EEE;
-  color: #181818;
+  color: #000;
 }
 .game-sec {
   text-align: center;
   margin: 2em 0 2em 0;
+}
+.menu-overlay {
+  text-align: center;
+  background: linear-gradient(rgba(0,0,0,1), rgba(0,0,0,0.9));
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+.menu-overlay .btn-inv i {
+  font-size: 5em;
+}
+.menu-overlay .row {
+  margin-top: 3.5em;
+}
+.menu-toggle {
+  font-size: 2em;
+  position: fixed;
+  top: 0.5em;
+  left: 1em;
+}
+.menu-toggle:hover {
+  cursor: pointer;
 }
 
 #player1 {
