@@ -30,7 +30,7 @@ li:hover {
 }
 .menu-overlay {
   text-align: center;
-  background: linear-gradient(rgba(0,0,0,1), rgba(0,0,0,0.9));
+  background: linear-gradient(rgba(0,0,0,1), rgba(0,0,0,0.8));
   position: fixed;
   top: 0;
   left: 0;
