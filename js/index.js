@@ -270,7 +270,7 @@ function gameEngine(plyrSeed, pcSeed) {
     if(pcSeed === 1 && !tris) {
       var wait = setInterval(function() {
         if(ready) {
-          var iaC = ia(cells, moves);
+          var iaC = {row: Math.round(Math.random()*2), col: Math.round(Math.random()*2)};
           cells[iaC.row][iaC.col].val = cross(cells[iaC.row][iaC.col].cx, cells[iaC.row][iaC.col].cy);
           chkTris(cells);
           moves++;
