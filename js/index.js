@@ -1,10 +1,9 @@
 /*NOTE: firefox setTimout() is bugged (Bug 814651)*/
 /*TODO list: 
 1. Personalized player names
-2. Choose X or O*/
-$(function() {
-  $('.menu-overlay').hide();
-  
+2. clear up code
+3. Implementing alpha-beta algorithm to improve performance*/
+$(function() {  
   $('#menu-close').click(function() {
     $('.menu-overlay').fadeOut();
   });
@@ -15,20 +14,21 @@ $(function() {
   $('#human-player').click(function() {
     $('#game').remove();
     $('#game-container').html('<canvas id="game" width="250px" height="250px"></canvas>');
-    gameEngine(0);
+    gameEngine(1, 0);
     $('.menu-overlay').fadeOut();
   });
   $('#pc-player').click(function() {
     $('#game').remove();
     $('#game-container').html('<canvas id="game" width="250px" height="250px"></canvas>');
-    gameEngine(2);
+    if($('#pcFirst').prop('checked')) gameEngine(2, 1);
+    else gameEngine(1, 2);
     $('.menu-overlay').fadeOut();
   });
   
-  gameEngine(2);
-})
+  gameEngine(1, 2);
+});
 
-function gameEngine(oppSeed) {
+function gameEngine(plyrSeed, pcSeed) {
   var game = document.getElementById('game');
   var reset = document.getElementById('reset');
   var ctx = game.getContext('2d');
@@ -54,17 +54,14 @@ function gameEngine(oppSeed) {
   var moves = 0;
   var points = [0, 0];
   var ready = 1;
-  var pcSeed = oppSeed;
-  var plyrSeed = 1;
   var tris = 0;
-  
   
   clear();
   points = [0, 0];
   document.getElementById('points1').innerHTML = 0;
   document.getElementById('points2').innerHTML = 0;
-
-  game.addEventListener('click', function(event) {run(event)});
+  
+  game.addEventListener('click', function(event) {run(event);});
 
   reset.addEventListener('click', function() {
     clear();
@@ -182,6 +179,7 @@ function gameEngine(oppSeed) {
       if(ready) {
         ctx.clearRect(0,0,w,h);
         gameBoard();
+        firstRun();
         clearInterval(wait);
       }
     }, 1);
@@ -230,139 +228,6 @@ function gameEngine(oppSeed) {
 
     return 0;
   }
-  function ia() {
-    //Still not unbeatable, even if the ia now lose with only one combination.
-    /*reference to minimax algorithm: 
-      1. https://www.ntu.edu.sg/home/ehchua/programming/java/JavaGame_TicTacToe_AI.html
-      2. http://neverstopbuilding.com/minimax*/
-    var bestChoose = {score: -Infinity, min: 0, row: 0, col: 0};
-    var j = 0, i = 0, n = 0, m = 0, min = 0;
-
-    for(j in cells) {
-      for(i in cells[j]) {
-        if(cells[j][i].val === 0) {
-          cells[j][i].val = pcSeed;
-          cells[j][i].maxScore = evaluate();
-          /*START - determines which position is the best*/
-          console.log('end of first evaluation');
-          if(bestChoose.score < cells[j][i].maxScore) {
-            bestChoose.score = cells[j][i].maxScore;
-            bestChoose.row = j;
-            bestChoose.col = i;
-          }
-          /*END - determines which position is the best*/
-          /*START - evaluates which is the best between two postions that look both good*/
-          else if(bestChoose.score === cells[j][i].maxScore) {
-            /*START - evaluates next best possible moves of opponent.*/
-            for(n in cells) {
-              for(m in cells[n]) {
-                if(cells[n][m].val === 0) {
-                  cells[n][m].val = plyrSeed;
-                  cells[n][m].minScore = evaluate();
-                  if(min > cells[n][m].minScore) min = cells[n][m].minScore;
-                  cells[n][m].val = 0;
-                }
-              }
-            }
-            console.log('min: ' + min);
-            cells[j][i].val = 0;
-            cells[bestChoose.row][bestChoose.col].val = 2;
-            for(n in cells) {
-              for(m in cells[n]) {
-                if(cells[n][m].val === 0) {
-                  cells[n][m].val = plyrSeed;
-                  cells[n][m].minScore = evaluate();
-                  if(bestChoose.min > cells[n][m].minScore) bestChoose.min = cells[n][m].minScore;
-                  cells[n][m].val = 0;
-                }
-              }
-            }
-            console.log('bestChoose.min: ' + bestChoose.min);
-            cells[bestChoose.row][bestChoose.col].val = 0;
-            /*END - evaluates next best possible moves of opponent.*/
-            /*START - determines which of the two positions is the worst for the opponent*/
-            if(bestChoose.min < min) {
-              bestChoose.score = cells[j][i].maxScore;
-              bestChoose.row = j;
-              bestChoose.col = i;
-            }
-            /*END - determines which of the two positions is the worst for the opponent*/
-          }
-          /*END - evaluates which is the best between two postions that look both good*/
-          cells[j][i].val = 0;
-        }
-      }
-    }
-    
-    console.log(bestChoose);
-    cells[bestChoose.row][bestChoose.col].val = circle(cells[bestChoose.row][bestChoose.col].cx, cells[bestChoose.row][bestChoose.col].cy);
-
-    return 0;
-  }
-  function evaluateLine(row1, col1, row2, col2, row3, col3) {
-    var score = 0;
-    /*heuristic function for evaluating lines*/
-    // First cell
-    if (cells[row1][col1].val == pcSeed) {
-      score = 1;
-    } else if (cells[row1][col1].val == plyrSeed) {
-      score = -1;
-    }
-
-    // Second cell
-    if (cells[row2][col2].val == pcSeed) {
-      if (score == 1) {   // cell1 is mySeed
-        score = 10;
-      } else if (score == -1) {  // cell1 is oppSeed
-        return 0;
-      } else {  // cell1 is empty
-        score = 1;
-      }
-    } else if (cells[row2][col2].val == plyrSeed) {
-      if (score == -1) { // cell1 is oppSeed
-        score = -10;
-      } else if (score == 1) { // cell1 is mySeed
-        return 0;
-      } else {  // cell1 is empty
-        score = -1;
-      }
-    }
-
-    // Third cell
-    if (cells[row3][col3].val == pcSeed) {
-      if (score > 0) {  // cell1 and/or cell2 is mySeed
-        score *= 10;
-      } else if (score < 0) {  // cell1 and/or cell2 is oppSeed
-        return 0;
-      } else {  // cell1 and cell2 are empty
-        score = 1;
-      }
-    } else if (cells[row3][col3].val == plyrSeed) {
-      if (score < 0) {  // cell1 and/or cell2 is oppSeed
-        score *= 10;
-      } else if (score > 1) {  // cell1 and/or cell2 is mySeed
-        return 0;
-      } else {  // cell1 and cell2 are empty
-        score = -1;
-      }
-    }
-    return score;
-  }
-  function evaluate() {
-    var score = 0;
-
-    /*heuristic function for the current board*/
-    score += evaluateLine(0, 0, 0, 1, 0, 2);  // row 0
-    score += evaluateLine(1, 0, 1, 1, 1, 2);  // row 1
-    score += evaluateLine(2, 0, 2, 1, 2, 2);  // row 2
-    score += evaluateLine(0, 0, 1, 0, 2, 0);  // col 0
-    score += evaluateLine(0, 1, 1, 1, 2, 1);  // col 1
-    score += evaluateLine(0, 2, 1, 2, 2, 2);  // col 2
-    score += evaluateLine(0, 0, 1, 1, 2, 2);  // diagonal
-    score += evaluateLine(0, 2, 1, 1, 2, 0);  // alternate diagonal
-    console.log('total score:' + score);
-    return score;
-  }
   function run(event) {
     var c = getCell(cells, event.offsetX, event.offsetY);
 
@@ -374,20 +239,160 @@ function gameEngine(oppSeed) {
         if(pcSeed === 2 && !tris) {
           var wait = setInterval(function() {
             if(ready) {
-              ia();
+              var iaC = ia(cells, moves);
+              cells[iaC.row][iaC.col].val = circle(cells[iaC.row][iaC.col].cx, cells[iaC.row][iaC.col].cy);
               chkTris(cells);
               moves++;
               clearInterval(wait);
             }
-          });
+          }, 1);
         }
       } else {
         cells[c[0]][c[1]].val = circle(cells[c[0]][c[1]].cx, cells[c[0]][c[1]].cy);
         chkTris(cells);
         moves++;
+        if(pcSeed === 1 && !tris) {
+          var wait = setInterval(function() {
+            if(ready === 1) {
+              var iaC = ia(cells, moves);
+              cells[iaC.row][iaC.col].val = cross(cells[iaC.row][iaC.col].cx, cells[iaC.row][iaC.col].cy);
+              chkTris(cells);
+              moves++;
+              clearInterval(wait);
+            }
+          }, 1);
+        }
       }
     }
 
     return 0;
+  }
+  function firstRun() {
+    if(pcSeed === 1 && !tris) {
+      var wait = setInterval(function() {
+        if(ready) {
+          var iaC = ia(cells, moves);
+          cells[iaC.row][iaC.col].val = cross(cells[iaC.row][iaC.col].cx, cells[iaC.row][iaC.col].cy);
+          chkTris(cells);
+          moves++;
+          clearInterval(wait);
+        }
+      }, 1);
+    }
+    
+    return 0;
+  }
+  
+  //IA functions
+  function ia(cells, moves) {
+    //reference to minimax algorithm: http://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-3-tic-tac-toe-ai-finding-optimal-move/
+    var bestMove = {val: -Infinity, row: 0, col: 0};
+    var moveVal = 0;
+    
+    for(var i in cells) {
+      for(var j in cells[i]) {
+        if(cells[i][j].val === 0) {
+          cells[i][j].val = pcSeed;
+          moveVal = minimax(cells, 0, false);
+          cells[i][j].val = 0;
+          
+          if(moveVal > bestMove.val) {
+            bestMove.val = moveVal;
+            bestMove.row = i;
+            bestMove.col = j;
+          }
+        }
+      }
+    }
+    
+    return bestMove;
+  }
+  function evaluate(cells) {
+    /*heuristic function for the current board*/
+    //checking for rows;
+    for(var row in cells) {
+      if(cells[row][0].val === cells[row][1].val && cells[row][0].val === cells[row][2].val) {
+        if(cells[row][0].val === pcSeed) return 10;
+        else if(cells[row][0].val === plyrSeed) return -10;
+      }
+    }
+    
+    //checking for columns;
+    for(var col in cells) {
+      if(cells[0][col].val === cells[1][col].val && cells[0][col].val === cells[2][col].val) {
+        if(cells[0][col].val === pcSeed) return 10;
+        else if(cells[0][col].val === plyrSeed) return -10;
+      }
+    }
+    
+    //checking for diagonals;
+    if(cells[0][0].val === cells[1][1].val && cells[0][0].val === cells[2][2].val) {
+      if(cells[0][0].val === pcSeed) return 10;
+      else if(cells[0][0].val === plyrSeed) return -10;
+    }
+    
+    if(cells[0][2].val === cells[1][1].val && cells[0][2].val === cells[2][0].val) {
+      if(cells[0][2].val === pcSeed) return 10;
+      else if(cells[0][2].val === plyrSeed) return -10;
+    }
+    
+    //If no winner;
+    return 0;
+  }
+  function minimax(cells, depth, isMax) {
+    var best = 0, i = 0, j = 0;
+    var score = evaluate(cells);
+    
+    if(score === 10) {
+      return score - depth;
+    }
+    
+    if(score === -10) {
+      return score + depth;
+    }
+    
+    if(isMoveLeft(cells) === false) {
+      return 0;
+    }
+    
+    if(isMax) {
+      best = -Infinity;
+      
+      for(i in cells) {
+        for(j in cells[i]) {
+          if(cells[i][j].val === 0) {
+            cells[i][j].val = pcSeed;
+            best = Math.max(best, minimax(cells, depth+1, !isMax));
+            cells[i][j].val = 0;
+          }
+        }
+      }
+      
+      return best;
+    }
+    
+    if(!isMax) {
+      best = Infinity;
+      
+      for(i in cells) {
+        for(j in cells[i]) {
+          if(cells[i][j].val === 0) {
+            cells[i][j].val = plyrSeed;
+            best = Math.min(best, minimax(cells, depth+1, !isMax));
+            cells[i][j].val = 0;
+          }
+        }
+      }
+      
+      return best;
+    }
+  }
+  function isMoveLeft(cells) {
+    for(var i in cells) {
+      for(var j in cells[i]) {
+        if(cells[i][j].val === 0) return true;
+      }
+    }
+    return false;
   }
 }
