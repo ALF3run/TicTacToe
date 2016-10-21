@@ -1,8 +1,7 @@
 /*NOTE: firefox setTimout() is bugged (Bug 814651)*/
 /*TODO list: 
 1. Personalized player names
-2. clear up code
-3. Implementing alpha-beta algorithm to improve performance*/
+2. clear up code*/
 $(function() {  
   $('#menu-close').click(function() {
     $('.menu-overlay').fadeOut();
@@ -293,7 +292,7 @@ function gameEngine(plyrSeed, pcSeed) {
       for(var j in cells[i]) {
         if(cells[i][j].val === 0) {
           cells[i][j].val = pcSeed;
-          moveVal = minimax(cells, 0, false);
+          moveVal = minimax(cells, 0, false, -Infinity, Infinity);
           cells[i][j].val = 0;
           
           if(moveVal > bestMove.val) {
@@ -339,8 +338,8 @@ function gameEngine(plyrSeed, pcSeed) {
     //If no winner;
     return 0;
   }
-  function minimax(cells, depth, isMax) {
-    var best = 0, i = 0, j = 0;
+  function minimax(cells, depth, isMax, alpha, beta) {
+    var best = 0, value = 0, i = 0, j = 0;
     var score = evaluate(cells);
     
     if(score === 10) {
@@ -362,8 +361,11 @@ function gameEngine(plyrSeed, pcSeed) {
         for(j in cells[i]) {
           if(cells[i][j].val === 0) {
             cells[i][j].val = pcSeed;
-            best = Math.max(best, minimax(cells, depth+1, !isMax));
+            value = minimax(cells, depth+1, !isMax, alpha, beta);
             cells[i][j].val = 0;
+            best = Math.max(best, value);
+            alpha = Math.max(alpha, best)
+            if(beta <= alpha) break;
           }
         }
       }
@@ -378,8 +380,11 @@ function gameEngine(plyrSeed, pcSeed) {
         for(j in cells[i]) {
           if(cells[i][j].val === 0) {
             cells[i][j].val = plyrSeed;
-            best = Math.min(best, minimax(cells, depth+1, !isMax));
+            value = minimax(cells, depth+1, !isMax, alpha, beta);
             cells[i][j].val = 0;
+            best = Math.min(best, value);
+            beta = Math.min(beta, best)
+            if(beta <= alpha) break;
           }
         }
       }
