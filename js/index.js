@@ -299,6 +299,13 @@ function gameEngine(plyrSeed, pcSeed) {
             bestMove.val = moveVal;
             bestMove.row = i;
             bestMove.col = j;
+          } else if(moveVal == bestMove.val) {
+            //Number 66 was chosen empirically after some tries in order to obtain the most diversified gameplay
+            if(Math.ceil(Math.random()*100) > 66) {
+              bestMove.val = moveVal;
+              bestMove.row = i;
+              bestMove.col = j;
+            }
           }
         }
       }
